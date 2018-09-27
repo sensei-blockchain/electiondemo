@@ -1,46 +1,91 @@
-pragma solidity 0.4.24;
+pragma solidity ^0.4.24;
 
 contract Election {
-  // Model a Candidate
+
+  struct Voter {
+    bool registered;
+    bool voted;
+  }
+
   struct Candidate {
-    uint id;
     string name;
+    bool registered;
     uint voteCount;
   }
 
-  // Store accounts that have voted
-  mapping(address => bool) public voters;
-  // Read/write candidates
-  mapping(uint => Candidate) public candidates;
-  // Store Candidates Count
   uint public candidatesCount;
+  address public chairperson;
+  bool public votingStarted;
 
-  event votedEvent (uint indexed _candidateId);
+  mapping(address => Voter) public voters;
+  mapping(uint => Candidate) public candidates;
+
+  event CandidateAddedEvent (uint indexed candidateId);
+  event CandidateRemovedEvent (uint indexed candidateId);
+  event VotedEvent (address indexed voterAddress, uint indexed candidateId);
 
   constructor() public {
-    addCandidate("Candidate 1");
-    addCandidate("Candidate 2");
+    chairperson = msg.sender;
   }
 
-  function addCandidate (string _name) private {
-    candidatesCount ++;
-    candidates[candidatesCount] = Candidate(candidatesCount, _name, 0);
+  function addCandidate(string candidateName) public {
+    require(!votingStarted);
+    require(msg.sender == chairperson);
+
+    candidatesCount++;
+    candidates[candidatesCount] = Candidate(candidateName, true, 0);
+
+    emit CandidateAddedEvent(candidatesCount);
   }
 
-  function vote (uint _candidateId) public {
-    // require that they haven't voted before
-    require(!voters[msg.sender]);
+  function removeCandidate(uint candidateId) public {
+    require(!votingStarted);
+    require(msg.sender == chairperson);
 
-    // require a valid candidate
-    require(_candidateId > 0 && _candidateId <= candidatesCount);
+    delete candidates[candidateId];
 
-    // record that voter has voted
-    voters[msg.sender] = true;
+    emit CandidateRemovedEvent(candidateId);
+  }
 
-    // update candidate vote Count
-    candidates[_candidateId].voteCount ++;
+  function giveRightToVote (address voterAddress) public {
+    require(!votingStarted);
+    require(!voters[voterAddress].registered);
 
-    // trigger voted event
-    emit votedEvent(_candidateId);
+    voters[voterAddress].registered = true;
+  }
+
+  function vote (uint candidateId) public {
+    require(votingStarted);
+    require(voters[msg.sender].registered && !voters[msg.sender].voted);
+    require(candidates[candidateId].registered);
+
+    voters[msg.sender].voted = true;
+    candidates[candidateId].voteCount++;
+
+    emit VotedEvent(msg.sender, candidateId);
+  }
+
+  function startVoting() public {
+    require(msg.sender == chairperson);
+    require(!votingStarted);
+
+    votingStarted = true;
+  }
+
+  function stopVoting() public {
+    require(msg.sender == chairperson);
+    require(votingStarted);
+
+    votingStarted = false;
+  }
+
+  function winningProposal() public view returns (string winningCandidate) {
+    uint256 winningVoteCount = 0;
+    for (uint i = 1; i <= candidatesCount; i++) {
+      if (candidates[i].voteCount > winningVoteCount) {
+        winningVoteCount = candidates[i].voteCount;
+        winningCandidate = candidates[i].name;
+      }
+    }
   }
 }
