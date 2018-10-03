@@ -34,9 +34,35 @@
             </p>
           </div>
           <div id="content" style="display: none;">
-          <h1 class="text-center">Election Results</h1>
-          <hr/>
-          <br/>
+            <h1 class="text-center">Election DApp</h1>
+            <hr/>
+            <br/>
+            <div id="chairperson">
+              <div>
+                <form onSubmit="App.toggleVoting(); return false;" id="votingStatus">
+                  <button type="submit" class="btn btn-primary"></button>
+                  <hr />
+                </form>
+              </div>
+              <div>
+                <form onSubmit="App.addCandidate(); return false;">
+                  <div class="form-group">
+                    <label for="candidatesName">Candidate name</label>
+                    <input class="form-control" id="candidatesName">
+                  </div>
+                  <button type="submit" class="btn btn-primary">Add</button>
+                  <hr />
+                </form>
+                <form onSubmit="App.addVoter(); return false;">
+                  <div class="form-group">
+                    <label for="voterAddress">Voter address</label>
+                    <input class="form-control" id="voterAddress">
+                  </div>
+                  <button type="submit" class="btn btn-primary">Add</button>
+                  <hr />
+                </form>
+              </div>
+            </div>
             <table class="table">
               <thead>
                 <tr>
@@ -50,7 +76,7 @@
             </table>
             <form onSubmit="App.castVote(); return false;">
               <div class="form-group">
-                <label for="candidatesSelect">Select Candidate</label>
+                <label for="candidatesSelect">Select candidate to vote</label>
                 <select class="form-control" id="candidatesSelect">
                 </select>
               </div>

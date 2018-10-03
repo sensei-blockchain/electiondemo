@@ -8,6 +8,7 @@ contract Election {
   }
 
   struct Candidate {
+    uint id;
     string name;
     bool registered;
     uint voteCount;
@@ -20,6 +21,7 @@ contract Election {
   mapping(address => Voter) public voters;
   mapping(uint => Candidate) public candidates;
 
+  event VotingStatusEvent (bool status);
   event CandidateAddedEvent (uint indexed candidateId);
   event CandidateRemovedEvent (uint indexed candidateId);
   event VotedEvent (address indexed voterAddress, uint indexed candidateId);
@@ -33,18 +35,9 @@ contract Election {
     require(msg.sender == chairperson);
 
     candidatesCount++;
-    candidates[candidatesCount] = Candidate(candidateName, true, 0);
+    candidates[candidatesCount] = Candidate(candidatesCount, candidateName, true, 0);
 
     emit CandidateAddedEvent(candidatesCount);
-  }
-
-  function removeCandidate(uint candidateId) public {
-    require(!votingStarted);
-    require(msg.sender == chairperson);
-
-    delete candidates[candidateId];
-
-    emit CandidateRemovedEvent(candidateId);
   }
 
   function giveRightToVote (address voterAddress) public {
@@ -65,18 +58,12 @@ contract Election {
     emit VotedEvent(msg.sender, candidateId);
   }
 
-  function startVoting() public {
+  function toggleVoting() public {
     require(msg.sender == chairperson);
-    require(!votingStarted);
 
-    votingStarted = true;
-  }
+    votingStarted = !votingStarted;
 
-  function stopVoting() public {
-    require(msg.sender == chairperson);
-    require(votingStarted);
-
-    votingStarted = false;
+    emit VotingStatusEvent(votingStarted);
   }
 
   function winningProposal() public view returns (string winningCandidate) {
