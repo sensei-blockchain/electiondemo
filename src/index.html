@@ -1,100 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Election Results</title>
 
-    <!-- Bootstrap -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-  </head>
-  <body>
-    <div class="container" style="width: 650px;">
-      <div class="row">
-        <div class="col-lg-12">
-          <div id="loader">
-            <p>
-              To be able to use our services please use the
-              <a
-                href="https://www.google.com/chrome/browser/desktop/"
-                target="_blank"
-                rel="noopener noreferrer"
-              > Chrome browser </a>
-              and install the
-              <a
-                href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en"
-                target="_blank"
-                rel="noopener noreferrer"
-              > METAMASK </a>
-              extension.
-            </p>
-            <p>
-              After installation, please create an ethereum account and connect this to metamask.
-            </p>
-          </div>
-          <div id="content" style="display: none;">
-            <h1 class="text-center">Election DApp</h1>
-            <hr/>
-            <br/>
-            <div id="chairperson">
-              <div>
-                <form onSubmit="App.toggleVoting(); return false;" id="votingStatus">
-                  <button type="submit" class="btn btn-primary"></button>
-                  <hr />
-                </form>
-              </div>
-              <div>
-                <form onSubmit="App.addCandidate(); return false;">
-                  <div class="form-group">
-                    <label for="candidatesName">Candidate name</label>
-                    <input class="form-control" id="candidatesName">
-                  </div>
-                  <button type="submit" class="btn btn-primary">Add</button>
-                  <hr />
-                </form>
-                <form onSubmit="App.addVoter(); return false;">
-                  <div class="form-group">
-                    <label for="voterAddress">Voter address</label>
-                    <input class="form-control" id="voterAddress">
-                  </div>
-                  <button type="submit" class="btn btn-primary">Add</button>
-                  <hr />
-                </form>
-              </div>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Election Results</title>
+
+  <!-- Custom styles -->
+  <link href="css/styles.css" rel="stylesheet">
+  <!-- Bootstrap -->
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font awesome -->
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+  <div class="container" style="width: 650px;">
+    <div class="row">
+      <div class="col-lg-12">
+
+        <div id="overlay">
+          <i class="fa fa-spinner fa-spin fa-4x loading"></i>
+        </div>
+
+        <div id="content" style="display: none;">
+          <h1 class="title text-center">Election DApp</h1>
+          <hr />
+          <br />
+          <div id="chairperson">
+            <div class="text-center">
+              <h3>Toggle Voting</h3>
+              <label class="vote-switch">
+                <input type="checkbox" onClick="App.toggleVoting();">
+                <span class="slider"></span>
+              </label>
+              <hr />
             </div>
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Name</th>
-                  <th scope="col">Votes</th>
-                </tr>
-              </thead>
-              <tbody id="candidatesResults">
-              </tbody>
-            </table>
-            <form onSubmit="App.castVote(); return false;">
+            <form onSubmit="App.addCandidate(); return false;">
               <div class="form-group">
-                <label for="candidatesSelect">Select candidate to vote</label>
-                <select class="form-control" id="candidatesSelect">
-                </select>
+                <label for="candidatesName">Candidate name</label>
+                <input class="form-control" id="candidatesName">
               </div>
-              <button type="submit" class="btn btn-primary">Vote</button>
+              <button type="submit" class="btn btn-primary">Add</button>
               <hr />
             </form>
-            <p id="accountAddress" class="text-center"></p>
+            <form onSubmit="App.addVoter(); return false;">
+              <div class="form-group">
+                <label for="voterAddress">Voter address</label>
+                <input class="form-control" id="voterAddress">
+              </div>
+              <button type="submit" class="btn btn-primary">Add</button>
+              <hr />
+            </form>
           </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Votes</th>
+              </tr>
+            </thead>
+            <tbody id="candidatesResults">
+            </tbody>
+          </table>
+          <hr />
+          <form id="voteForm" onSubmit="App.castVote(); return false;">
+            <div class="form-group">
+              <label for="candidatesSelect">Select Candidate</label>
+              <select class="form-control" id="candidatesSelect">
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Vote</button>
+            <hr />
+          </form>
+          <p id="accountAddress" class="text-center"></p>
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/web3.min.js"></script>
-    <script src="js/truffle-contract.js"></script>
-    <script src="js/app.js"></script>
-  </body>
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/web3.min.js"></script>
+  <script src="js/truffle-contract.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
 </html>
