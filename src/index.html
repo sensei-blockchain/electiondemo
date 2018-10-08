@@ -17,7 +17,7 @@
 </head>
 
 <body>
-  <div class="container" style="width: 650px;">
+  <div class="container">
     <div class="row">
       <div class="col-lg-12">
 
@@ -28,54 +28,61 @@
         <div id="content" style="display: none;">
           <h1 class="title text-center">Election DApp</h1>
           <hr />
+          <p class="text-center" id="errorText" style="display:none">There was a problem. Please try again!</p>
           <br />
           <div id="chairperson">
-            <div class="text-center">
-              <h3>Toggle Voting</h3>
-              <label class="vote-switch">
+            <div style="padding-bottom: 50px; padding-left: 30%;">
+              <p style="float: left; margin: 15px 12px;" class="vote-status stopped">VOTING STOPPED</p>
+              <label class="vote-switch" style="float: left;">
                 <input type="checkbox" onClick="App.toggleVoting();">
                 <span class="slider"></span>
               </label>
-              <hr />
+              <p style="float: left; margin: 15px 12px;" class="vote-status started">VOTING STARTED</p>
             </div>
-            <form onSubmit="App.addCandidate(); return false;">
-              <div class="form-group">
-                <label for="candidatesName">Candidate name</label>
-                <input class="form-control" id="candidatesName">
-              </div>
-              <button type="submit" class="btn btn-primary">Add</button>
-              <hr />
-            </form>
-            <form onSubmit="App.addVoter(); return false;">
-              <div class="form-group">
-                <label for="voterAddress">Voter address</label>
-                <input class="form-control" id="voterAddress">
-              </div>
-              <button type="submit" class="btn btn-primary">Add</button>
-              <hr />
-            </form>
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Name</th>
-                  <th scope="col">Votes</th>
-                </tr>
-              </thead>
-              <tbody id="candidatesResults">
-              </tbody>
-            </table>
+            <div class="form-wrapper">
+              <form onSubmit="App.addCandidate(); return false;" class="form-row">
+                <div class="form-group">
+                  <label for="candidatesName" class="col-md-2">Candidate name</label>
+                  <input class="form-control col-md-8" id="candidatesName">
+                </div>
+                <button type="submit" class="btn btn-primary form-group col-md-2">Add Candidate</button>
+              </form>
+            </div>
+            <div class="form-wrapper">
+              <form onSubmit="App.addVoter(); return false;" class="form-row">
+                <div class="form-group">
+                  <label for="voterAddress" class="col-md-2">Voter address</label>
+                  <input class="form-control col-md-4" id="voterAddress">
+                </div>
+                <button type="submit" class="btn btn-primary form-group col-md-2">Add Voter</button>
+              </form>
+            </div>
+            <div class="table-wrapper">
+              <table class="table candidate-list">
+                <thead class="thead-dark">
+                  <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Votes</th>
+                  </tr>
+                </thead>
+                <tbody id="candidatesResults">
+                </tbody>
+              </table>
+            </div>
             <hr />
           </div>
           <form id="voteForm" onSubmit="App.castVote(); return false;">
             <div class="form-group">
-              <label for="candidatesSelect">Select Candidate</label>
+              <label for="candidatesSelect">Select Candidate To Vote</label>
               <select class="form-control" id="candidatesSelect">
               </select>
             </div>
             <button type="submit" class="btn btn-primary">Vote</button>
             <hr />
           </form>
+          <h4 style="display:none" id="notAuthorized" class="text-center">You are not authorized to vote</h4>
+          <h4 style="display:none" id="alreadyVoted" class="text-center">You have already voted</h4>
           <p id="accountAddress" class="text-center"></p>
         </div>
       </div>

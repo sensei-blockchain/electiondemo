@@ -56,6 +56,7 @@ App = {
     $('.vote-switch input').attr('disabled', false)
     loader.show();
     content.hide();
+    $("#errorText").hide();
 
     // Load account data
     web3.eth.getCoinbase(function (err, account) {
@@ -80,8 +81,14 @@ App = {
       let candidatesResults = $("#candidatesResults");
       let candidatesSelect = $('#candidatesSelect');
 
-      const voteStatus = await instance.votingStarted()
-      voteStatus ? $('.vote-switch input').attr('checked', true) : $('.vote-switch input').attr('checked', false)
+      const voteStatus = await instance.votingStarted();
+      if (voteStatus) {
+        $('.vote-switch input').attr('checked', true);
+        $('.vote-status.started').addClass('active');
+      } else {
+        $('.vote-switch input').attr('checked', false);
+        $('.vote-status.stopped').addClass('active');
+      }
 
       for (var i = 1; i <= candidatesCount; i++) {
         const candidate = await instance.candidates(i);
@@ -108,8 +115,14 @@ App = {
       const isVoterRegistered = voter[0];
       const hasVoted = voter[1];
       // Do not allow a user to vote
-      if (!isVoterRegistered || hasVoted) {
+      if (!isVoterRegistered) {
         $('#voteForm').hide();
+        $('#notAuthorized').show();
+      } else if (hasVoted) {
+        $('#voteForm').hide();
+        $('#alreadyVoted').show();
+      } else {
+        $('#notAuthorized').hide();
       }
     }
     catch (error) {
@@ -121,10 +134,18 @@ App = {
     try {
       $('.vote-switch input').attr('disabled', true)
       $("#overlay").show();
+      if ($('.vote-switch input').prop('checked')) {
+        $('.vote-status.stopped').removeClass('active');
+        $('.vote-status.started').addClass('active');
+      } else {
+        $('.vote-status.stopped').addClass('active');
+        $('.vote-status.started').removeClass('active');
+      }
       const instance = await App.contracts.Election.deployed();
       await instance.toggleVoting({ from: App.account });
     } catch (error) {
       console.log(error)
+      location.reload();
     }
   },
 
@@ -136,6 +157,8 @@ App = {
       await instance.addCandidate(candidatesName, { from: App.account });
     } catch (error) {
       console.log(error)
+      App.render();
+      $("#errorText").show();
     }
   },
 
@@ -147,6 +170,8 @@ App = {
       await instance.giveRightToVote(voterAddress, { from: App.account });
     } catch (error) {
       console.log(error)
+      App.render();
+      $("#errorText").show();
     }
   },
 
@@ -159,6 +184,8 @@ App = {
     }
     catch (err) {
       console.error(err);
+      App.render();
+      $("#errorText").show();
     };
   }
 };

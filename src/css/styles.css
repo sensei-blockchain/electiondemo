@@ -78,3 +78,44 @@ input:checked + .slider:before {
   -ms-transform: translateX(64px);
   transform: translateX(64px);
 }
+
+#notAuthorized, #alreadyVoted, #errorText {
+  color: red;
+  font-weight: 600;
+}
+
+#chairperson .form-wrapper {
+  padding-top: 40px;
+}
+
+#chairperson form input {
+  width: 735px;
+}
+
+#chairperson form button {
+  margin-left: 15px;
+}
+
+#chairperson .table-wrapper {
+  padding-top: 75px;
+}
+
+.thead-dark {
+  background: #0000009e;
+  color: white;
+}
+
+.candidate-list {
+  margin: 0px auto;
+  width: 70% !important;
+}
+
+p.vote-status {
+  font-weight: 600;
+  color: #808080bf;
+}
+
+p.vote-status.active {
+  color: black;
+}
+
