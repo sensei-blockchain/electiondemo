@@ -67,14 +67,4 @@ contract Election {
 
         emit VotingStatusEvent(votingStarted);
     }
-
-    function winningProposal() public view returns (string winningCandidate) {
-        uint256 winningVoteCount = 0;
-        for (uint i = 1; i <= candidatesCount; i++) {
-            if (candidates[i].voteCount > winningVoteCount) {
-                winningVoteCount = candidates[i].voteCount;
-                winningCandidate = candidates[i].name;
-            }
-        }
-    }
 }
