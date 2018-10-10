@@ -23,8 +23,7 @@ contract Election {
 
     event VotingStatusEvent (bool status);
     event CandidateAddedEvent (uint indexed candidateId);
-    event CandidateRemovedEvent (uint indexed candidateId);
-    event VoterAddedEvent ();
+    event VoterAddedEvent (address indexed voterAddress);
     event VotedEvent (address indexed voterAddress, uint indexed candidateId);
 
     constructor() public {
@@ -32,8 +31,8 @@ contract Election {
     }
 
     function addCandidate(string candidateName) public {
-        require(!votingStarted);
         require(msg.sender == chairperson);
+        require(!votingStarted);
 
         candidatesCount++;
         candidates[candidatesCount] = Candidate(candidatesCount, candidateName, true, 0);
@@ -42,11 +41,12 @@ contract Election {
     }
 
     function giveRightToVote (address voterAddress) public {
+        require(msg.sender == chairperson);
         require(!votingStarted);
         require(!voters[voterAddress].registered);
 
         voters[voterAddress].registered = true;
-        emit VoterAddedEvent();
+        emit VoterAddedEvent(voterAddress);
     }
 
     function vote (uint candidateId) public {
