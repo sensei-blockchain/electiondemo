@@ -4,11 +4,11 @@ App = {
   account: "0x0",
   hasVoted: false,
 
-  init: function() {
+  init: function () {
     return App.initWeb3();
   },
 
-  initWeb3: function() {
+  initWeb3: function () {
     if (typeof web3 !== "undefined") {
       // If a web3 instance is already provided by Meta Mask.
       App.web3Provider = web3.currentProvider;
@@ -22,8 +22,8 @@ App = {
     return App.initContract();
   },
 
-  initContract: function() {
-    $.getJSON("Election.json", function(election) {
+  initContract: function () {
+    $.getJSON("Election.json", function (election) {
       App.contracts.Election = TruffleContract(election);
       App.contracts.Election.setProvider(App.web3Provider);
 
@@ -33,7 +33,7 @@ App = {
     });
   },
 
-  listenForEvents: async function() {
+  listenForEvents: async function () {
     const instance = await App.contracts.Election.deployed();
     instance
       .allEvents(
@@ -43,22 +43,30 @@ App = {
           toBlock: "latest"
         }
       )
-      .watch(function(error, event) {
+      .watch(function (error, event) {
         console.log("event triggered", event);
         App.render();
       });
   },
 
-  render: async function() {
-    const loader = $("#overlay");
+  showLoader: function () {
+    $("#overlay").show();
+    $("input").attr("disabled", true);
+  },
+
+  hideLoader: function () {
+    $("#overlay").hide();
+    $("input").attr("disabled", false);
+  },
+
+  render: async function () {
     const content = $("#content");
-    const chairpersonContent = $(".chairperson");
     $(".vote-switch input").attr("disabled", false);
-    loader.show();
+    App.showLoader();
     content.hide();
     $("#errorText").hide();
 
-    web3.eth.getCoinbase(function(err, account) {
+    web3.eth.getCoinbase(function (err, account) {
       if (err === null) {
         App.account = account;
         $("#accountAddress").html("Your Account: " + account);
@@ -67,6 +75,7 @@ App = {
 
     try {
       const instance = await App.contracts.Election.deployed();
+      const chairpersonContent = $(".chairperson");
       const chairpersonAddress = await instance.chairperson();
       if (App.account !== chairpersonAddress) {
         chairpersonContent.hide();
@@ -95,15 +104,7 @@ App = {
 
         // Render candidate Result
         const candidateTemplate =
-          "<tr id=" +
-          id +
-          "><th>" +
-          id +
-          "</th><td>" +
-          name +
-          "</td><td>" +
-          voteCount +
-          "</td></tr>";
+          "<tr id=" + id + "><th>" + id + "</th><td>" + name + "</td><td>" + voteCount + "</td></tr>";
         const candidateOption =
           "<option value='" + id + "' >" + name + "</ option>";
 
@@ -115,20 +116,22 @@ App = {
         }
       }
 
-      loader.hide();
+      App.hideLoader();
       content.show();
       $("form").show();
       const voter = await instance.voters(App.account);
       const isVoterRegistered = voter[0];
       const hasVoted = voter[1];
-      if (!isVoterRegistered) {
+      if (isVoterRegistered && voteStatus && !hasVoted) {
+        $("#voteForm").show();
+      } else {
         $("#voteForm").hide();
+      }
+      if (!isVoterRegistered) {
         $("#notAuthorized").show();
       } else if (!voteStatus && App.account !== chairpersonAddress) {
-        $("#voteForm").hide();
         $("#notStarted").show();
       } else if (hasVoted) {
-        $("#voteForm").hide();
         $("#alreadyVoted").show();
       } else {
         $("#notAuthorized").hide();
@@ -138,10 +141,10 @@ App = {
     }
   },
 
-  toggleVoting: async function() {
+  toggleVoting: async function () {
     try {
       $(".vote-switch input").attr("disabled", true);
-      $("#overlay").show();
+      App.showLoader();
       if ($(".vote-switch input").prop("checked")) {
         $(".vote-status.stopped").removeClass("active");
         $(".vote-status.started").addClass("active");
@@ -157,9 +160,9 @@ App = {
     }
   },
 
-  addCandidate: async function() {
+  addCandidate: async function () {
     try {
-      $("#overlay").show();
+      App.showLoader();
       const candidatesName = $("#candidatesName").val();
       const instance = await App.contracts.Election.deployed();
       await instance.addCandidate(candidatesName, { from: App.account });
@@ -170,9 +173,9 @@ App = {
     }
   },
 
-  addVoter: async function() {
+  addVoter: async function () {
     try {
-      $("#overlay").show();
+      App.showLoader();
       const voterAddress = $("#voterAddress").val();
       const instance = await App.contracts.Election.deployed();
       await instance.giveRightToVote(voterAddress, { from: App.account });
@@ -183,8 +186,8 @@ App = {
     }
   },
 
-  castVote: async function() {
-    $("#overlay").show();
+  castVote: async function () {
+    App.showLoader();
     var candidateId = $("#candidatesSelect").val();
     try {
       const instance = await App.contracts.Election.deployed();
@@ -197,8 +200,8 @@ App = {
   }
 };
 
-$(function() {
-  $(window).load(function() {
+$(function () {
+  $(window).load(function () {
     App.init();
   });
 });

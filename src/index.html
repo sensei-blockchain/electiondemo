@@ -53,13 +53,28 @@
     <div id="overlay">
       <i class="fa fa-spinner fa-spin fa-4x loading"></i>
     </div>
+    <center>
+      <div id="voteForm" class="form-wrapper" style="display:none">
+        <h5 class="form-title">Select Candidate To Vote:-</h5>
+        <hr class="divider">
+        </hr>
+        <form id="voteForm" onSubmit="App.castVote(); return false;">
+          <div class="form-group">
+            <select class="form-control" id="candidatesSelect">
+            </select>
+          </div>
+          <button type="submit" class="form-button">Vote</button>
+        </form>
+      </div>
+    </center>
 
     <div class="chairperson">
       <div id="body-left" style="float: left; width: 50%;">
         <center>
           <div class="form-wrapper">
             <h5 class="form-title">Candidate Name:-</h5>
-            <hr class="divider"></hr>
+            <hr class="divider">
+            </hr>
 
             <form onSubmit="App.addCandidate(); return false;" class="form-row">
               <div class="form-group">
@@ -72,7 +87,8 @@
 
           <div class="form-wrapper">
             <h5 class="form-title">Voter address:-</h5>
-            <hr class="divider"></hr>
+            <hr class="divider">
+            </hr>
 
             <form onSubmit="App.addVoter(); return false;" class="form-row">
               <div class="form-group">
@@ -102,20 +118,7 @@
         <hr />
       </div>
     </div>
-    <center>
-      <div id="voteForm" class="form-wrapper">
-        <h5 class="form-title">Select Candidate To Vote:-</h5>
-        <hr class="divider"></hr>
-        <form id="voteForm" onSubmit="App.castVote(); return false;">
-          <div class="form-group">
-            <select class="form-control" id="candidatesSelect">
-            </select>
-          </div>
-          <button type="submit" class="form-button">Vote</button>
-          <hr />
-        </form>
-      </div>
-    </center>
+
   </div>
 
   <footer class="container-fluid text-center ">
@@ -126,9 +129,11 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <!-- Include all compiled plugins (below), or include individual files as needed -->
   <script src="js/bootstrap.min.js"></script>
+
   <script src="js/web3.min.js"></script>
   <script src="js/truffle-contract.js"></script>
   <script src="js/app.js"></script>
+
 </body>
 
 </html>

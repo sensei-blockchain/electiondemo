@@ -1,39 +1,27 @@
-* {
-  padding: 0;
-  margin: 0;
-}
-
-html {
+html, body {
   height: 100%;
-}
-
-.title {
-  color: #357ab7;
-  font-weight: 700;
 }
 
 #overlay {
   background: #e9e9e9;
   display: none;
-  position: absolute;
+  position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
-  opacity: 0.5;
+  opacity: 0.8;
 }
 
 .loading {
   z-index: 50;
   color: black;
   display: block !important;
-  text-align: center;
-  margin-top: 35%;
+  margin-top: 20%;
 }
 
 .vote-switch {
   position: relative;
-  display: inline-block;
   width: 62px;
   height: 30px;
 }
@@ -98,13 +86,7 @@ input:checked + .slider:before {
   padding-top: 75px;
 }
 
-.thead-dark {
-  background: #0000009e;
-  color: white;
-}
-
 .candidate-list {
-  margin: 0px auto;
   width: 70% !important;
 }
 
@@ -119,7 +101,6 @@ p.vote-status.active {
 
 #header {
   position: fixed;
-  top: 0;
   z-index: 1;
   width: 100%;
   height: 55px;
@@ -156,12 +137,7 @@ p.vote-status.active {
   width: 100%;
   padding-top: 50px;
   height: max-content;
-}
-
-body,
-#body {
   min-height: 90% !important;
-  height: 90%;
   background-color: #eff3f5;
 }
 
@@ -187,7 +163,6 @@ body,
   background-color: #00628c;
   color: white;
   width: 150px;
-  display: inline-block;
   border: none;
   text-decoration: none;
   font-family: sans-serif;
@@ -216,4 +191,5 @@ footer {
 #header-title {
   text-align: center;
   color: white;
+  font-weight: 900;
 }
